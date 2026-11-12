@@ -1,0 +1,58 @@
+@import "tailwindcss";
+
+/* Jetons alignés sur src/styles/tokens.ts (vérifié par tests/unit/tokens.test.ts). */
+@theme {
+  --color-ivory: #faf7f0;
+  --color-surface: #ffffff;
+  --color-champagne: #f1e6d0;
+  --color-ink: #16130f;
+  --color-muted: #5e574c;
+  --color-gold: #c6a15b;
+  --color-gold-deep: #7d5f25;
+  --color-line: #e7dfcf;
+  --color-field: #8a8072;
+  --color-danger: #9b2c2c;
+  --color-success: #2f6b3f;
+
+  --font-serif: var(--font-cormorant), "Cormorant Garamond", Georgia, serif;
+  --font-sans: var(--font-inter), system-ui, sans-serif;
+
+  /* Cible tactile minimale (44 px) */
+  --spacing-touch: 2.75rem;
+}
+
+:root {
+  color-scheme: light;
+}
+
+html {
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  background: var(--color-ivory);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-serif);
+  font-weight: 500;
+  letter-spacing: 0.005em;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-gold-deep);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
