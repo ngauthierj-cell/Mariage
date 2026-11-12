@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="fr">
+  <body style="margin:0;padding:32px 16px;background:#FAF7F0;font-family:Helvetica,Arial,sans-serif;color:#16130F">
+    <table role="presentation" width="100%" style="max-width:480px;margin:0 auto;background:#FFFFFF;border:1px solid #E7DFCF;border-radius:24px">
+      <tr>
+        <td style="padding:32px;text-align:center">
+          <p style="margin:0 0 8px;font-size:12px;letter-spacing:4px;text-transform:uppercase;color:#7D5F25">Notre Mariage</p>
+          <h1 style="margin:0 0 16px;font-family:Georgia,serif;font-weight:normal;font-size:28px">Votre connexion</h1>
+          <p style="margin:0 0 24px;line-height:1.5;color:#5E574C">Touchez le bouton pour vous connecter :</p>
+          <a href="{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&amp;type=email"
+             style="display:inline-block;padding:14px 28px;border-radius:999px;background:#16130F;color:#FAF7F0;text-decoration:none;font-weight:bold">Me connecter</a>
+          <p style="margin:24px 0 8px;line-height:1.5;color:#5E574C">Ou saisissez ce code dans l'application :</p>
+          <p style="margin:0;font-size:32px;letter-spacing:8px;font-weight:bold">{{ .Token }}</p>
+          <p style="margin:24px 0 0;font-size:13px;line-height:1.5;color:#5E574C">Valable une heure. Si vous n'êtes pas à l'origine de cette demande, ignorez cet e-mail.</p>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>

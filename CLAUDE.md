@@ -22,8 +22,12 @@
 - `npm run lint` : ESLint
 - `npm run typecheck` : `next typegen` + `tsc`
 - `npm run icons` : régénère les icônes PWA (Playwright/Chromium)
+- `npm run db:test` : migrations et tests RLS pgTAP sur un Postgres local jetable (sans Docker)
+- `npm run db:types` : régénère `src/types/database.ts` (projet Supabase lié)
 
-Avant chaque commit, lancer `npm run lint && npm run typecheck && npm test && npm run build`.
+Avant chaque commit, lancer `npm run lint && npm run typecheck && npm test && npm run db:test && npm run build`.
+
+Mise en place de Supabase, Google et Vercel : `docs/mise-en-place-supabase.md`.
 
 ## Arborescence
 - `src/app/` : routes. Slugs en français (`/connexion`, `/invites`, `/plan-de-table`…). Zone connectée dans `(app)/`, RSVP public dans `r/[token]`.
@@ -43,6 +47,11 @@ Avant chaque commit, lancer `npm run lint && npm run typecheck && npm test && np
 - Toute table porte un `wedding_id` (ON DELETE CASCADE) et une RLS fondée sur `is_wedding_member(wedding_id)`.
 - Le client anonyme n'accède à aucune table : le RSVP public passe par des RPC `SECURITY DEFINER` appelées côté serveur.
 - Les jetons (RSVP, invitation partenaire) sont aléatoires (≥ 32 octets) ; ceux à usage unique sont stockés hachés (sha256).
+- Migrations : `supabase/migrations/<horodatage>_<nom>.sql`. Toute nouvelle table doit avoir sa RLS **et** un test pgTAP (le test « RLS activée sur toutes les tables » échoue sinon).
+- Pas d'INSERT direct dans `weddings` ni dans `wedding_members` : passer par des fonctions `SECURITY DEFINER`. Les colonnes sensibles (`rsvp_token`, `created_by`) sont protégées par des droits par colonne.
+- Auth : `getClaims()` (JWT vérifié), jamais `getSession()` côté serveur. `requireUser()` dans `src/lib/auth/session.ts`. Redirections internes uniquement via `safeNextPath()`.
+- Cache Components : toute lecture de session ou de cookies doit être dans un `<Suspense>`. Dans les clients serveur, appeler `cookies()` avant toute autre lecture.
+- Connexion par e-mail : lien (`/auth/confirm?token_hash`) **et** code à 6 chiffres (PWA iOS).
 - Un commit par étape testable.
 
 ## Règles métier validées
@@ -59,7 +68,7 @@ Avant chaque commit, lancer `npm run lint && npm run typecheck && npm test && np
 
 ## Feuille de route — release 1
 1. ✅ Squelette, design system, PWA, CLAUDE.md
-2. Migrations du socle + RLS, clients Supabase, auth (lien magique + Google)
+2. ✅ Migrations du socle + RLS, clients Supabase, auth (lien magique + code + Google)
 3. Onboarding
 4. Invitation du partenaire
 5. Synchronisation temps réel
