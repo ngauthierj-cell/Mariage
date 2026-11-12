@@ -13,7 +13,7 @@ grant usage on schema auth, extensions to anon, authenticated, service_role;
 grant usage on schema public to anon, authenticated, service_role;
 
 create table auth.users (
-  id uuid primary key default gen_random_uuid(),
+  id uuid primary key, -- pas de valeur par défaut, comme dans Supabase
   email text unique,
   raw_user_meta_data jsonb not null default '{}'::jsonb,
   created_at timestamptz not null default now()

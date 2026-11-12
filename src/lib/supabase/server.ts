@@ -1,6 +1,7 @@
 import "server-only";
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
+import { connection } from "next/server";
 import { getSupabasePublicEnv } from "@/lib/env";
 import type { Database } from "@/types/database";
 
@@ -9,8 +10,10 @@ import type { Database } from "@/types/database";
  * À créer à chaque requête : il lit/écrit les cookies de session.
  */
 export async function createClient() {
-  // cookies() d'abord : marque la route comme dynamique avant toute autre lecture.
+  // cookies() puis connection() d'abord : rendu à la requête uniquement (le client
+  // Supabase lit l'heure courante, interdit pendant un pré-rendu avec Cache Components).
   const cookieStore = await cookies();
+  await connection();
   const { url, key } = getSupabasePublicEnv();
 
   return createServerClient<Database>(url, key, {

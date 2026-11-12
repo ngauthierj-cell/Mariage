@@ -13,7 +13,7 @@
   ⚠️ Next 16 diffère de Next 13–15 : lire `node_modules/next/dist/docs/` avant d'utiliser une API (par exemple `middleware.ts` est devenu `proxy.ts`).
 - Supabase : Auth (lien magique + Google), Postgres avec RLS sur **toutes** les tables, Realtime.
 - Vercel (déploiement), GitHub (code).
-- Tests : Vitest (unitaires), pgTAP (RLS, `supabase/tests`), Playwright (e2e, plus tard).
+- Tests : Vitest (unitaires, `tests/unit`), pgTAP (RLS, `supabase/tests`), Playwright (e2e, `tests/e2e`, sur la pile Supabase locale).
 
 ## Commandes
 - `npm run dev` : serveur de développement
@@ -23,7 +23,14 @@
 - `npm run typecheck` : `next typegen` + `tsc`
 - `npm run icons` : régénère les icônes PWA (Playwright/Chromium)
 - `npm run db:test` : migrations et tests RLS pgTAP sur un Postgres local jetable (sans Docker)
-- `npm run db:types` : régénère `src/types/database.ts` (projet Supabase lié)
+- `npm run db:types` : régénère `src/types/database.ts` depuis la pile locale (`db:types:remote` pour le projet lié). Ne jamais éditer ce fichier à la main.
+- `npm run test:e2e` : tests Playwright de bout en bout (pile locale requise, voir ci-dessous)
+
+### Pile Supabase locale (Docker)
+Si le démon Docker ne tourne pas : `dockerd &`. Ensuite :
+`SUPABASE_AUTH_EXTERNAL_GOOGLE_CLIENT_ID=x SUPABASE_AUTH_EXTERNAL_GOOGLE_SECRET=x npx supabase start -x studio,imgproxy,edge-runtime,logflare,vector,supavisor,storage-api,postgres-meta`
+puis un `.env.local` avec l'URL `http://127.0.0.1:54321` et les clés affichées par `npx supabase status`.
+Les e-mails (lien et code) arrivent dans Mailpit (`http://127.0.0.1:54324`). `npx supabase test db` lance les tests pgTAP sur cette pile ; `npx supabase db reset` réapplique les migrations.
 
 Avant chaque commit, lancer `npm run lint && npm run typecheck && npm test && npm run db:test && npm run build`.
 
@@ -50,7 +57,10 @@ Mise en place de Supabase, Google et Vercel : `docs/mise-en-place-supabase.md`.
 - Migrations : `supabase/migrations/<horodatage>_<nom>.sql`. Toute nouvelle table doit avoir sa RLS **et** un test pgTAP (le test « RLS activée sur toutes les tables » échoue sinon).
 - Pas d'INSERT direct dans `weddings` ni dans `wedding_members` : passer par des fonctions `SECURITY DEFINER`. Les colonnes sensibles (`rsvp_token`, `created_by`) sont protégées par des droits par colonne.
 - Auth : `getClaims()` (JWT vérifié), jamais `getSession()` côté serveur. `requireUser()` dans `src/lib/auth/session.ts`. Redirections internes uniquement via `safeNextPath()`.
-- Cache Components : toute lecture de session ou de cookies doit être dans un `<Suspense>`. Dans les clients serveur, appeler `cookies()` avant toute autre lecture.
+- Cache Components : toute lecture de session ou de cookies doit être dans un `<Suspense>` (la zone `(app)` en fournit un). Le client serveur appelle `cookies()` puis `connection()` avant tout, car Supabase lit `Date.now()`.
+- Pages de la zone connectée : `requireWedding()` (redirige vers `/bienvenue` sans mariage) ou `getCurrentWedding()` (`src/features/wedding/queries.ts`).
+- Formulaires en plusieurs étapes : donner des `key` distinctes aux boutons « Continuer » et « Valider » (sinon React réutilise le bouton, qui passe en submit pendant le clic).
+- Tests e2e : cibler par rôle ou libellé (`getByRole`, `getByLabel` avec `exact`), comme un lecteur d'écran.
 - Connexion par e-mail : lien (`/auth/confirm?token_hash`) **et** code à 6 chiffres (PWA iOS).
 - Un commit par étape testable.
 
@@ -69,7 +79,7 @@ Mise en place de Supabase, Google et Vercel : `docs/mise-en-place-supabase.md`.
 ## Feuille de route — release 1
 1. ✅ Squelette, design system, PWA, CLAUDE.md
 2. ✅ Migrations du socle + RLS, clients Supabase, auth (lien magique + code + Google)
-3. Onboarding
+3. ✅ Onboarding (assistant en 7 étapes, `create_wedding`) + tableau de bord
 4. Invitation du partenaire
 5. Synchronisation temps réel
 6. Invités (foyers)

@@ -1,117 +1,51 @@
-// Types de la base, au format `supabase gen types typescript`.
-// Écrits à la main tant qu'aucun projet Supabase n'est relié :
-// une fois le projet lié, régénérer avec `npm run db:types`.
+// Généré par `npm run db:types` (pile locale) ou `npm run db:types:remote` — ne pas modifier à la main.
 
-export type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[];
+export type Json =
+  | string
+  | number
+  | boolean
+  | null
+  | { [key: string]: Json | undefined }
+  | Json[];
 
 export type Database = {
-  __InternalSupabase: { PostgrestVersion: "13" };
   public: {
     Tables: {
-      profiles: {
-        Row: { id: string; display_name: string | null; created_at: string; updated_at: string };
-        Insert: { id: string; display_name?: string | null; created_at?: string; updated_at?: string };
-        Update: { id?: string; display_name?: string | null; created_at?: string; updated_at?: string };
-        Relationships: [];
-      };
-      weddings: {
-        Row: {
-          id: string;
-          partner_a_name: string;
-          partner_b_name: string;
-          date_precision: Database["public"]["Enums"]["date_precision"];
-          wedding_date: string | null;
-          venue_name: string | null;
-          venue_city: string | null;
-          is_abroad: boolean;
-          ceremony_types: Database["public"]["Enums"]["ceremony_type"][];
-          estimated_guests: number | null;
-          total_budget_cents: number | null;
-          has_bachelor_parties: boolean;
-          has_stationery: boolean;
-          has_registry: boolean;
-          has_honeymoon: boolean;
-          rsvp_token: string;
-          rsvp_enabled: boolean;
-          rsvp_deadline: string | null;
-          created_by: string | null;
-          created_at: string;
-          updated_at: string;
-        };
-        Insert: {
-          id?: string;
-          partner_a_name: string;
-          partner_b_name: string;
-          date_precision?: Database["public"]["Enums"]["date_precision"];
-          wedding_date?: string | null;
-          venue_name?: string | null;
-          venue_city?: string | null;
-          is_abroad?: boolean;
-          ceremony_types?: Database["public"]["Enums"]["ceremony_type"][];
-          estimated_guests?: number | null;
-          total_budget_cents?: number | null;
-          has_bachelor_parties?: boolean;
-          has_stationery?: boolean;
-          has_registry?: boolean;
-          has_honeymoon?: boolean;
-          rsvp_token?: string;
-          rsvp_enabled?: boolean;
-          rsvp_deadline?: string | null;
-          created_by?: string | null;
-          created_at?: string;
-          updated_at?: string;
-        };
-        Update: Partial<Database["public"]["Tables"]["weddings"]["Insert"]>;
-        Relationships: [];
-      };
-      wedding_members: {
-        Row: {
-          wedding_id: string;
-          user_id: string;
-          side: Database["public"]["Enums"]["wedding_side"];
-          joined_at: string;
-        };
-        Insert: {
-          wedding_id: string;
-          user_id: string;
-          side: Database["public"]["Enums"]["wedding_side"];
-          joined_at?: string;
-        };
-        Update: Partial<Database["public"]["Tables"]["wedding_members"]["Insert"]>;
-        Relationships: [
-          {
-            foreignKeyName: "wedding_members_wedding_id_fkey";
-            columns: ["wedding_id"];
-            isOneToOne: false;
-            referencedRelation: "weddings";
-            referencedColumns: ["id"];
-          },
-        ];
-      };
       partner_invitations: {
         Row: {
-          id: string;
-          wedding_id: string;
-          token_hash: string;
-          created_by: string | null;
           created_at: string;
+          created_by: string | null;
           expires_at: string;
+          id: string;
+          revoked_at: string | null;
+          token_hash: string;
           used_at: string | null;
           used_by: string | null;
-          revoked_at: string | null;
-        };
-        Insert: {
-          id?: string;
           wedding_id: string;
-          token_hash: string;
-          created_by?: string | null;
+        };
+        ComputedFields: never;
+        Insert: {
           created_at?: string;
+          created_by?: string | null;
           expires_at?: string;
+          id?: string;
+          revoked_at?: string | null;
+          token_hash: string;
           used_at?: string | null;
           used_by?: string | null;
-          revoked_at?: string | null;
+          wedding_id: string;
         };
-        Update: Partial<Database["public"]["Tables"]["partner_invitations"]["Insert"]>;
+        Update: {
+          created_at?: string;
+          created_by?: string | null;
+          expires_at?: string;
+          id?: string;
+          revoked_at?: string | null;
+          token_hash?: string;
+          used_at?: string | null;
+          used_by?: string | null;
+          wedding_id?: string;
+        };
         Relationships: [
           {
             foreignKeyName: "partner_invitations_wedding_id_fkey";
@@ -122,24 +56,95 @@ export type Database = {
           },
         ];
       };
-      vendor_categories: {
-        Row: { code: string; label: string; sort: number };
-        Insert: { code: string; label: string; sort?: number };
-        Update: { code?: string; label?: string; sort?: number };
+      profiles: {
+        Row: {
+          created_at: string;
+          display_name: string | null;
+          id: string;
+          updated_at: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          created_at?: string;
+          display_name?: string | null;
+          id: string;
+          updated_at?: string;
+        };
+        Update: {
+          created_at?: string;
+          display_name?: string | null;
+          id?: string;
+          updated_at?: string;
+        };
         Relationships: [];
       };
-      wedding_vendor_needs: {
-        Row: { wedding_id: string; category_code: string; created_at: string };
-        Insert: { wedding_id: string; category_code: string; created_at?: string };
-        Update: { wedding_id?: string; category_code?: string; created_at?: string };
+      vendor_categories: {
+        Row: {
+          code: string;
+          label: string;
+          sort: number;
+        };
+        ComputedFields: never;
+        Insert: {
+          code: string;
+          label: string;
+          sort?: number;
+        };
+        Update: {
+          code?: string;
+          label?: string;
+          sort?: number;
+        };
+        Relationships: [];
+      };
+      wedding_members: {
+        Row: {
+          joined_at: string;
+          side: Database["public"]["Enums"]["wedding_side"];
+          user_id: string;
+          wedding_id: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          joined_at?: string;
+          side: Database["public"]["Enums"]["wedding_side"];
+          user_id: string;
+          wedding_id: string;
+        };
+        Update: {
+          joined_at?: string;
+          side?: Database["public"]["Enums"]["wedding_side"];
+          user_id?: string;
+          wedding_id?: string;
+        };
         Relationships: [
           {
-            foreignKeyName: "wedding_vendor_needs_wedding_id_fkey";
+            foreignKeyName: "wedding_members_wedding_id_fkey";
             columns: ["wedding_id"];
             isOneToOne: false;
             referencedRelation: "weddings";
             referencedColumns: ["id"];
           },
+        ];
+      };
+      wedding_vendor_needs: {
+        Row: {
+          category_code: string;
+          created_at: string;
+          wedding_id: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          category_code: string;
+          created_at?: string;
+          wedding_id: string;
+        };
+        Update: {
+          category_code?: string;
+          created_at?: string;
+          wedding_id?: string;
+        };
+        Relationships: [
           {
             foreignKeyName: "wedding_vendor_needs_category_code_fkey";
             columns: ["category_code"];
@@ -147,25 +152,254 @@ export type Database = {
             referencedRelation: "vendor_categories";
             referencedColumns: ["code"];
           },
+          {
+            foreignKeyName: "wedding_vendor_needs_wedding_id_fkey";
+            columns: ["wedding_id"];
+            isOneToOne: false;
+            referencedRelation: "weddings";
+            referencedColumns: ["id"];
+          },
         ];
       };
+      weddings: {
+        Row: {
+          ceremony_types: Database["public"]["Enums"]["ceremony_type"][];
+          created_at: string;
+          created_by: string | null;
+          date_precision: Database["public"]["Enums"]["date_precision"];
+          estimated_guests: number | null;
+          has_bachelor_parties: boolean;
+          has_honeymoon: boolean;
+          has_registry: boolean;
+          has_stationery: boolean;
+          id: string;
+          is_abroad: boolean;
+          partner_a_name: string;
+          partner_b_name: string;
+          rsvp_deadline: string | null;
+          rsvp_enabled: boolean;
+          rsvp_token: string;
+          total_budget_cents: number | null;
+          updated_at: string;
+          venue_city: string | null;
+          venue_name: string | null;
+          wedding_date: string | null;
+        };
+        ComputedFields: never;
+        Insert: {
+          ceremony_types?: Database["public"]["Enums"]["ceremony_type"][];
+          created_at?: string;
+          created_by?: string | null;
+          date_precision?: Database["public"]["Enums"]["date_precision"];
+          estimated_guests?: number | null;
+          has_bachelor_parties?: boolean;
+          has_honeymoon?: boolean;
+          has_registry?: boolean;
+          has_stationery?: boolean;
+          id?: string;
+          is_abroad?: boolean;
+          partner_a_name: string;
+          partner_b_name: string;
+          rsvp_deadline?: string | null;
+          rsvp_enabled?: boolean;
+          rsvp_token?: string;
+          total_budget_cents?: number | null;
+          updated_at?: string;
+          venue_city?: string | null;
+          venue_name?: string | null;
+          wedding_date?: string | null;
+        };
+        Update: {
+          ceremony_types?: Database["public"]["Enums"]["ceremony_type"][];
+          created_at?: string;
+          created_by?: string | null;
+          date_precision?: Database["public"]["Enums"]["date_precision"];
+          estimated_guests?: number | null;
+          has_bachelor_parties?: boolean;
+          has_honeymoon?: boolean;
+          has_registry?: boolean;
+          has_stationery?: boolean;
+          id?: string;
+          is_abroad?: boolean;
+          partner_a_name?: string;
+          partner_b_name?: string;
+          rsvp_deadline?: string | null;
+          rsvp_enabled?: boolean;
+          rsvp_token?: string;
+          total_budget_cents?: number | null;
+          updated_at?: string;
+          venue_city?: string | null;
+          venue_name?: string | null;
+          wedding_date?: string | null;
+        };
+        Relationships: [];
+      };
     };
-    Views: { [_ in never]: never };
+    Views: {
+      [_ in never]: never;
+    };
     Functions: {
-      is_wedding_member: { Args: { target_wedding_id: string }; Returns: boolean };
-      current_wedding_id: { Args: Record<PropertyKey, never>; Returns: string | null };
+      create_wedding: {
+        Args: {
+          p_ceremony_types?: Database["public"]["Enums"]["ceremony_type"][];
+          p_date_precision?: Database["public"]["Enums"]["date_precision"];
+          p_estimated_guests?: number;
+          p_has_bachelor_parties?: boolean;
+          p_has_honeymoon?: boolean;
+          p_has_registry?: boolean;
+          p_has_stationery?: boolean;
+          p_is_abroad?: boolean;
+          p_partner_a_name: string;
+          p_partner_b_name: string;
+          p_total_budget_cents?: number;
+          p_vendor_codes?: string[];
+          p_venue_city?: string;
+          p_venue_name?: string;
+          p_wedding_date?: string;
+        };
+        Returns: string;
+      };
+      current_wedding_id: { Args: Record<PropertyKey, never>; Returns: string };
+      generate_token: { Args: Record<PropertyKey, never>; Returns: string };
+      is_wedding_member: {
+        Args: { target_wedding_id: string };
+        Returns: boolean;
+      };
     };
     Enums: {
       ceremony_type: "civile" | "religieuse" | "laique";
       date_precision: "day" | "month" | "unknown";
       wedding_side: "A" | "B";
     };
-    CompositeTypes: { [_ in never]: never };
+    CompositeTypes: {
+      [_ in never]: never;
+    };
   };
 };
 
-type PublicSchema = Database["public"];
-export type Tables<T extends keyof PublicSchema["Tables"]> = PublicSchema["Tables"][T]["Row"];
-export type TablesInsert<T extends keyof PublicSchema["Tables"]> = PublicSchema["Tables"][T]["Insert"];
-export type TablesUpdate<T extends keyof PublicSchema["Tables"]> = PublicSchema["Tables"][T]["Update"];
-export type Enums<T extends keyof PublicSchema["Enums"]> = PublicSchema["Enums"][T];
+type DatabaseWithoutInternals = Omit<Database, "__InternalSupabase">;
+
+type DefaultSchema = DatabaseWithoutInternals[Extract<
+  keyof Database,
+  "public"
+>];
+
+export type Tables<
+  DefaultSchemaTableNameOrOptions extends
+    | keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
+    | { schema: keyof DatabaseWithoutInternals },
+  TableName extends (DefaultSchemaTableNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals;
+  }
+    ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
+        DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])
+    : never) = never,
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals;
+}
+  ? (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
+      DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])[TableName] extends {
+      Row: infer R;
+    }
+    ? R
+    : never
+  : DefaultSchemaTableNameOrOptions extends keyof (DefaultSchema["Tables"] &
+        DefaultSchema["Views"])
+    ? (DefaultSchema["Tables"] &
+        DefaultSchema["Views"])[DefaultSchemaTableNameOrOptions] extends {
+        Row: infer R;
+      }
+      ? R
+      : never
+    : never;
+
+export type TablesInsert<
+  DefaultSchemaTableNameOrOptions extends
+    keyof DefaultSchema["Tables"] | { schema: keyof DatabaseWithoutInternals },
+  TableName extends (DefaultSchemaTableNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals;
+  }
+    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
+    : never) = never,
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals;
+}
+  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
+      Insert: infer I;
+    }
+    ? I
+    : never
+  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
+    ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
+        Insert: infer I;
+      }
+      ? I
+      : never
+    : never;
+
+export type TablesUpdate<
+  DefaultSchemaTableNameOrOptions extends
+    keyof DefaultSchema["Tables"] | { schema: keyof DatabaseWithoutInternals },
+  TableName extends (DefaultSchemaTableNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals;
+  }
+    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
+    : never) = never,
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals;
+}
+  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
+      Update: infer U;
+    }
+    ? U
+    : never
+  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
+    ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
+        Update: infer U;
+      }
+      ? U
+      : never
+    : never;
+
+export type Enums<
+  DefaultSchemaEnumNameOrOptions extends
+    keyof DefaultSchema["Enums"] | { schema: keyof DatabaseWithoutInternals },
+  EnumName extends (DefaultSchemaEnumNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals;
+  }
+    ? keyof DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"]
+    : never) = never,
+> = DefaultSchemaEnumNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals;
+}
+  ? DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"][EnumName]
+  : DefaultSchemaEnumNameOrOptions extends keyof DefaultSchema["Enums"]
+    ? DefaultSchema["Enums"][DefaultSchemaEnumNameOrOptions]
+    : never;
+
+export type CompositeTypes<
+  PublicCompositeTypeNameOrOptions extends
+    | keyof DefaultSchema["CompositeTypes"]
+    | { schema: keyof DatabaseWithoutInternals },
+  CompositeTypeName extends (PublicCompositeTypeNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals;
+  }
+    ? keyof DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
+    : never) = never,
+> = PublicCompositeTypeNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals;
+}
+  ? DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"][CompositeTypeName]
+  : PublicCompositeTypeNameOrOptions extends keyof DefaultSchema["CompositeTypes"]
+    ? DefaultSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
+    : never;
+
+export const Constants = {
+  public: {
+    Enums: {
+      ceremony_type: ["civile", "religieuse", "laique"],
+      date_precision: ["day", "month", "unknown"],
+      wedding_side: ["A", "B"],
+    },
+  },
+} as const;

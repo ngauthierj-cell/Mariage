@@ -9,8 +9,8 @@ create or replace function tests.create_user(p_email text, p_name text default n
 returns uuid language plpgsql security definer set search_path = '' as $$
 declare v_id uuid;
 begin
-  insert into auth.users (email, raw_user_meta_data)
-  values (p_email, case when p_name is null then '{}'::jsonb else jsonb_build_object('full_name', p_name) end)
+  insert into auth.users (id, email, raw_user_meta_data)
+  values (gen_random_uuid(), p_email, case when p_name is null then '{}'::jsonb else jsonb_build_object('full_name', p_name) end)
   returning id into v_id;
   return v_id;
 end $$;
