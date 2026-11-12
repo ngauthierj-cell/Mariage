@@ -61,7 +61,9 @@ Mise en place de Supabase, Google et Vercel : `docs/mise-en-place-supabase.md`.
 - Pages de la zone connectée : `requireWedding()` (redirige vers `/bienvenue` sans mariage) ou `getCurrentWedding()` (`src/features/wedding/queries.ts`).
 - Formulaires en plusieurs étapes : donner des `key` distinctes aux boutons « Continuer » et « Valider » (sinon React réutilise le bouton, qui passe en submit pendant le clic).
 - Tests e2e : cibler par rôle ou libellé (`getByRole`, `getByLabel` avec `exact`), comme un lecteur d'écran.
-- Connexion par e-mail : lien (`/auth/confirm?token_hash`) **et** code à 6 chiffres (PWA iOS).
+- Connexion par e-mail : lien **et** code à 6 chiffres (PWA iOS). Le lien est construit à partir de `{{ .RedirectTo }}` (= `/auth/confirm?suite=…`), qui conserve la page de retour (ex. une invitation). Les URLs de redirection Supabase doivent donc autoriser `https://<domaine>/**`.
+- Zone connectée : `(app)/(main)/` = pages avec barre de navigation (`AppNav`) ; `/bienvenue` et `/rejoindre` sont hors de `(main)`.
+- Jetons à usage unique : jamais réaffichés après création (seul le hash est stocké) ; régénérer révoque l'ancien.
 - Un commit par étape testable.
 
 ## Règles métier validées
@@ -80,7 +82,7 @@ Mise en place de Supabase, Google et Vercel : `docs/mise-en-place-supabase.md`.
 1. ✅ Squelette, design system, PWA, CLAUDE.md
 2. ✅ Migrations du socle + RLS, clients Supabase, auth (lien magique + code + Google)
 3. ✅ Onboarding (assistant en 7 étapes, `create_wedding`) + tableau de bord
-4. Invitation du partenaire
+4. ✅ Invitation du partenaire (`/reglages`, `/rejoindre/[token]`) + barre de navigation
 5. Synchronisation temps réel
 6. Invités (foyers)
 7. RSVP : réglages + formulaire public + limites de tentatives

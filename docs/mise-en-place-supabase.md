@@ -27,7 +27,8 @@ npm run db:types                                  # régénère src/types/databa
 
 **Authentication > URL Configuration**
 - Site URL : `http://localhost:3000` (puis l'URL Vercel de production)
-- Redirect URLs : `http://localhost:3000/auth/callback` et `https://<domaine>/auth/callback`
+- Redirect URLs : `http://localhost:3000/**` et `https://<domaine>/**`
+  (le lien de l'e-mail est construit à partir de l'URL de redirection : sans ces entrées, il serait cassé)
 
 **Authentication > Email Templates > Magic Link** (et **Confirm signup**)
 - Sujet : `Votre lien de connexion`

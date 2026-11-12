@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
-import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import { buttonClasses } from "@/components/ui/button";
 import { Card, Ornament } from "@/components/ui/card";
-import { signOut } from "@/features/auth/actions";
+import { getPartnerStatus } from "@/features/partner/queries";
 import { requireWedding } from "@/features/wedding/queries";
+import { requireUser } from "@/lib/auth/session";
 import { countdownLabel, formatWeddingDate, todayInParis } from "@/lib/utils/dates";
 import { formatCents } from "@/lib/utils/money";
 
@@ -18,7 +20,11 @@ const UPCOMING = [
 ];
 
 export default async function HomePage() {
-  const wedding = await requireWedding();
+  const [user, wedding] = await Promise.all([requireUser(), requireWedding()]);
+  const { members } = await getPartnerStatus(wedding.id);
+  const alone = members.length < 2;
+  const mySide = members.find((m) => m.userId === user.id)?.side;
+  const partnerName = mySide === "B" ? wedding.partner_a_name : wedding.partner_b_name;
   const countdown = countdownLabel(wedding.date_precision, wedding.wedding_date, todayInParis());
   const place = [wedding.venue_name, wedding.venue_city].filter(Boolean).join(", ");
 
@@ -37,6 +43,16 @@ export default async function HomePage() {
           <p className="rounded-full bg-ink px-4 py-1.5 font-serif text-xl text-gold">{countdown}</p>
         )}
       </header>
+
+      {alone && (
+        <Card className="flex flex-col gap-3 border-gold bg-champagne/40">
+          <h2 className="text-2xl">Invitez {partnerName}</h2>
+          <p className="text-sm text-muted">Organisez à deux : partagez un lien pour que {partnerName} rejoigne votre espace.</p>
+          <Link href="/reglages#partenaire" className={buttonClasses("primary")}>
+            Inviter {partnerName}
+          </Link>
+        </Card>
+      )}
 
       <Card className="grid grid-cols-2 gap-x-4 gap-y-5">
         <Info label="Lieu" value={place || "À définir"} detail={wedding.is_abroad ? "À l'étranger" : undefined} />
@@ -62,12 +78,6 @@ export default async function HomePage() {
           </Card>
         ))}
       </section>
-
-      <form action={signOut}>
-        <Button type="submit" variant="ghost" className="w-full">
-          Se déconnecter
-        </Button>
-      </form>
     </main>
   );
 }

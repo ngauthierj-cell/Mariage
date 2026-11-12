@@ -7,6 +7,7 @@ export const PROTECTED_PREFIXES = [
   "/planning",
   "/plan-de-table",
   "/reglages",
+  "/rejoindre",
 ] as const;
 
 export const LOGIN_PATH = "/connexion";

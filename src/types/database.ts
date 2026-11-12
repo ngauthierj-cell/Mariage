@@ -1,5 +1,3 @@
-// Généré par `npm run db:types` (pile locale) ou `npm run db:types:remote` — ne pas modifier à la main.
-
 export type Json =
   | string
   | number
@@ -239,6 +237,14 @@ export type Database = {
       [_ in never]: never;
     };
     Functions: {
+      accept_partner_invitation: { Args: { p_token: string }; Returns: string };
+      create_partner_invitation: {
+        Args: Record<PropertyKey, never>;
+        Returns: {
+          expires_at: string;
+          token: string;
+        }[];
+      };
       create_wedding: {
         Args: {
           p_ceremony_types?: Database["public"]["Enums"]["ceremony_type"][];
@@ -261,9 +267,22 @@ export type Database = {
       };
       current_wedding_id: { Args: Record<PropertyKey, never>; Returns: string };
       generate_token: { Args: Record<PropertyKey, never>; Returns: string };
+      hash_token: { Args: { p_token: string }; Returns: string };
       is_wedding_member: {
         Args: { target_wedding_id: string };
         Returns: boolean;
+      };
+      preview_partner_invitation: {
+        Args: { p_token: string };
+        Returns: {
+          partner_a_name: string;
+          partner_b_name: string;
+          status: string;
+        }[];
+      };
+      revoke_partner_invitation: {
+        Args: Record<PropertyKey, never>;
+        Returns: undefined;
       };
     };
     Enums: {

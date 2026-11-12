@@ -68,7 +68,8 @@ test("connexion par code, onboarding complet, puis tableau de bord", async ({ pa
   await page.goto("/bienvenue");
   await expect(page).toHaveURL(/\/accueil$/);
 
-  // Déconnexion
+  // Déconnexion (depuis les réglages)
+  await page.getByRole("link", { name: "Réglages" }).click();
   await page.getByRole("button", { name: "Se déconnecter" }).click();
   await expect(page).toHaveURL(/\/connexion$/);
 });

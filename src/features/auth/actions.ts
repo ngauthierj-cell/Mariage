@@ -24,7 +24,8 @@ export async function requestEmailOtp(_prev: LoginState, formData: FormData): Pr
     email: parsed.data,
     options: {
       shouldCreateUser: true,
-      emailRedirectTo: `${site}/auth/callback?suite=${encodeURIComponent(next)}`,
+      // Le modèle d'e-mail construit le lien à partir de cette URL ({{ .RedirectTo }}).
+      emailRedirectTo: `${site}/auth/confirm?suite=${encodeURIComponent(next)}`,
     },
   });
   if (error) return { step: "email", email: rawEmail, error: authErrorMessage(error.code) };

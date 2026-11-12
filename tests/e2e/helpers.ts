@@ -38,4 +38,28 @@ export async function loginWithCode(page: Page, email: string): Promise<void> {
   expect(code, "code à 6 chiffres présent dans l'e-mail").toBeTruthy();
   await page.getByLabel("Code reçu par e-mail").fill(code!);
   await page.getByRole("button", { name: "Valider le code" }).click();
+  await expect(page).not.toHaveURL(/\/connexion/);
+}
+
+/** Crée un mariage minimal via l'onboarding (prénoms seuls). */
+export async function createMinimalWedding(page: Page, a: string, b: string): Promise<void> {
+  await expect(page).toHaveURL(/\/bienvenue$/);
+  await page.getByLabel("Votre prénom").fill(a);
+  await page.getByLabel("Le prénom de votre moitié").fill(b);
+  await page.getByRole("button", { name: "Commencer" }).click();
+  await page.getByText("Pas encore décidé").click();
+  for (let i = 0; i < 5; i++) await page.getByRole("button", { name: "Continuer" }).click();
+  await page.getByRole("button", { name: "Créer notre espace" }).click();
+  await expect(page).toHaveURL(/\/accueil$/);
+}
+
+/** Connexion par le lien reçu par e-mail, après une redirection éventuelle vers /connexion. */
+export async function loginWithEmailLink(page: Page, email: string): Promise<void> {
+  await page.getByLabel("Adresse e-mail").fill(email);
+  await page.getByRole("button", { name: "Recevoir mon lien" }).click();
+  await expect(page.getByText(`Un e-mail vient d'être envoyé à ${email}`)).toBeVisible();
+  const { html } = await waitForEmail(page, email);
+  const href = /href="([^"]*\/auth\/confirm[^"]*)"/.exec(html)?.[1]?.replaceAll("&amp;", "&");
+  expect(href, "lien de connexion présent dans l'e-mail").toBeTruthy();
+  await page.goto(href!);
 }
